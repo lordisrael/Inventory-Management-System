@@ -6,9 +6,17 @@ var inventorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product"
     },
-    quantity: {
+    // quantity: {
+    //     type: Number,
+    //     required: true,
+    //     default: 0
+    // },
+    alert: {
+        type: Boolean,
+        default: false
+    }, 
+    alertNum: {
         type: Number,
-        required: true,
         default: 0
     },
     department: {

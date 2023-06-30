@@ -1,5 +1,6 @@
 require('dotenv').config()
 require('express-async-errors')
+const cookieParser = require('cookie-parser')
 
 const express = require('express')
 const app = express()
@@ -11,6 +12,7 @@ const authRoute= require('./routes/userRoutes')
 const dbConnect = require('./config/db')
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.use('/api/v1/auth', authRoute)
 

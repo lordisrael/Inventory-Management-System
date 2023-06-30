@@ -1,4 +1,6 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs')
+ // Erase if already required
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
@@ -26,7 +28,27 @@ var userSchema = new mongoose.Schema({
         required: [true, 'Please provide password'],
         minLength: 6,
     },
+    refreshToken: {
+        type: String
+    },
 });
+
+
+userSchema.pre('save', async function(next) {
+    if(!this.isModified("password")){
+        next()
+    }
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
+})
+
+userSchema.methods.comparePassword = async function(candidatePassword){
+    return await bcrypt.compare(candidatePassword, this.password)
+}
+
+userSchema.methods.createPasswordResetToken = function() {
+    
+}
 
 //Export the model
 module.exports = mongoose.model('User', userSchema);
