@@ -1,10 +1,12 @@
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 const {StatusCodes} = require('http-status-codes')
 const asyncHandler = require('express-async-handler')
 const { createJWT } = require('../config/jwt')
+const sendEmail = require('../config/sendEmail')
 const {createRefreshJWT} = require('../config/refreshjwt')
-const { ConflictError, UnauthenticatedError, NotFoundError } = require('../errors')
+const { ConflictError, UnauthenticatedError, NotFoundError, BadRequestError } = require('../errors')
 
 const createUser = asyncHandler(async(req, res) => {
     const {email} = req.body
@@ -93,7 +95,7 @@ const updatePassword = asyncHandler(async(req, res)=> {
     if(password) {
         user.password = password
         const updatedPassword = await user.save()
-        res.status(StatusCodes.OK).json({msg: 'You password has been updated',updatePassword})
+        res.status(StatusCodes.OK).json({msg: 'You password has been updated'})
     } else {
         throw new BadRequestError('Fill in your password')
     }
@@ -102,9 +104,53 @@ const updatePassword = asyncHandler(async(req, res)=> {
 const forgotPassword = asyncHandler(async(req, res) => {
     const {email} = req.body
     const user = await User.findOne({email})
+    if(!email) {
+        return res.status(400).json('Missing required fields');
+    } 
     if(!user){
         throw new NotFoundError('No user with this given email')
     }
+    const resetToken = user.createPasswordResetToken()
+    await user.save()
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/reset/${resetToken}`
+    const msg = `We have recieved a password reset request, please use the below link to rest your password\n\n${resetUrl}\n\nThis reset password link expires in 10 minutes`
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Password change request received',
+            message: msg
+        })
+        res.status(StatusCodes.OK).json({
+            status: "Success",
+            msg: "Reset link sent to user"
+        })
+        
+    } catch (error) {
+        user.passwordResetToken = undefined
+        user.passwordResetExpires = undefined
+        user.save()
+        throw new UnauthenticatedError('There was an error sending password reset token')
+    }
+})
+
+const resetPassword = asyncHandler(async(req, res) => {
+    const token = crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const user = await User.findOne({
+        passwordResetToken: token,
+        passwordResetExpires: {$gt: Date.now()}
+    })
+    if(!user) {
+        throw new NotFoundError('Token is invalid or expires')
+    }
+    user.password = req.body.password
+    user.passwordResetToken = undefined
+    user.passwordResetExpires = undefined
+    user.passwordChangedAt = Date.now()
+    user.save()
+    // const tokenJWT = createJWT(user._id, user.name)
+    // res.status(StatusCodes.OK).json({user: {name: user.name}, tokenJWT})
+    res.status(StatusCodes.OK).json('Password reset, login again')
+    
 })
 module.exports = {
     createUser,
@@ -112,5 +158,6 @@ module.exports = {
     handleRefreshToken,
     logout,
     updatePassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }
