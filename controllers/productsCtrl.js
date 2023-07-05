@@ -15,17 +15,22 @@ const getALLProducts = asyncHandler(async(req, res) => {
 })
 const getAProduct = asyncHandler(async(req, res) => {
     const {id: productId} = req.params
-    const product = await Product.findById({_id: productId})
+    const product = await Product.findById({_id: productId}).populate('department category').select('-_id -__v')
     if(!product){
-        throw new NotFoundError(`Products with this id: ${productsID} not found`)
+        throw new NotFoundError(`Products with this id: ${productID} not found`)
     }
     res.status(StatusCodes.OK).json({product})
 })
 const updateProducts = asyncHandler(async(req, res) => {
 
 })
-const deleteProducts = asyncHandler(async(req, res) => {
-
+const deleteProduct = asyncHandler(async(req, res) => {
+    const {id: productID} = req.params
+    const products = await Product.findByIdAndDelete({_id: productID})
+    if(!products) {
+        throw new NotFoundError(`Product with id: ${productID} not found`)
+    } 
+    res.status(StatusCodes.OK).json({msg: "Deleted"})
 })
 
 const addquantitytoProduct = asyncHandler(async(req, res)=> {
@@ -61,6 +66,7 @@ const sellProducts = asyncHandler(async(req, res) => {
 
 module.exports = {
     createProduct,
+    deleteProduct,
     sellProducts,
     getAProduct,
     addquantitytoProduct
