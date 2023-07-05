@@ -10,6 +10,14 @@ const createCategory = asyncHandler(async(req, res) => {
     }
     res.status(StatusCodes.CREATED).json({msg: 'Created',category})
 })
+const updateCategory = asyncHandler(async(req, res) => {
+    const {id: categoryId} = req.params
+    const category = await Category.findByIdAndUpdate({_id:categoryId}, req.body, { new: true})
+    if(!category) {
+        throw new NotFoundError(`Blog with id: ${categoryId} not found`)
+    }
+    res.status(StatusCodes.OK).json({msg: "Updated",category})
+})
 const deleteCategory = asyncHandler(async(req, res) => {
     const {id: categoryId} = req.params
     const category = await Category.findByIdAndDelete({_id: categoryId})
@@ -36,6 +44,7 @@ const getAllCategory = asyncHandler(async(req, res) => {
 module.exports = {
     createCategory,
     deleteCategory,
+    updateCategory,
     getCategory,
     getAllCategory
 }
