@@ -24,6 +24,11 @@ var userSchema = new mongoose.Schema({
         type:String,
         unique:true,
     },
+    role: {
+        type: String,
+        enum: ['User', 'Seller'],
+        default: 'User'
+    },
     password:{
         type:String,
         required: [true, 'Please provide password'],
