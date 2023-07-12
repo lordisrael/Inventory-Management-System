@@ -13,6 +13,7 @@ const productRoute = require('./routes/productsRoutes')
 const departmentRoute = require('./routes/departmentRoutes')
 const categoryRoute = require('./routes/categoryRoutes')
 const searchRoute = require('./routes/searchRoutes')
+const transactionRoutes = require('./routes/transactionRoutes')
 
 const dbConnect = require('./config/db')
 
@@ -23,6 +24,7 @@ app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/products', productRoute)
 app.use('/api/v1/department', departmentRoute)
 app.use('/api/v1/category', categoryRoute)
+app.use('/api/v1/transaction', transactionRoutes)
 app.use('/api/v1/search', authMiddleware, searchRoute)
 
 
