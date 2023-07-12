@@ -1,7 +1,9 @@
 const asyncHandler = require('express-async-handler')
 const Product = require('../models/product')
+const Transaction = require('../models/transaction')
 const {StatusCodes} = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
+const transaction = require('../models/transaction')
 
 const createProduct = asyncHandler(async(req, res) => {
     const products = await Product.create(req.body)
@@ -47,9 +49,12 @@ const sellProducts = asyncHandler(async(req, res) => {
     if(!Array.isArray(productsToSell)) {
         return res.status(400).json('Invalid format')
     }
+    const transactionId = []
+    let totalPrice = 0
+    const productIds = productsToSell.map(product => product.productID)
     for (const product of productsToSell){
-        const {sku, quantity} = product
-    const findproduct = await Product.findOne({sku})
+        const {sku, productID, quantity} = product
+    const findproduct = await Product.findOne({_id: productID})
     console.log(findproduct.name)
     if(!findproduct) {
         return res.status(404).json('Product with not found')
@@ -57,10 +62,21 @@ const sellProducts = asyncHandler(async(req, res) => {
     if(findproduct.quantity < quantity) {
         return res.status(400).json('Insufficient quantity or Product out of stock')
     }
+    totalPrice += findproduct.price * quantity
+    const transcation = new Transaction({
+        //productId: productID,
+        productId: productIds,
+        sellerId: req.user._id,
+        quantity,
+        totalPrice : totalPrice,
+        timestamp: new Date()
+    })
+    await transcation.save()
+    //const transac = transactionId.push(transaction._id)
     findproduct.quantity -= quantity
     await findproduct.save()
     }
-    res.status(StatusCodes.OK).json('Products sold successfully')
+    res.status(StatusCodes.OK).json({msg: 'Products sold successfully',transac})
 
 })
 
