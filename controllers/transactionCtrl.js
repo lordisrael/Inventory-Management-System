@@ -32,8 +32,43 @@ const getTransactionWeek = asyncHandler(async(req, res) => {
     res.status(StatusCodes.OK).json(transaction)
 }) 
 
+const getTransactionMonth = asyncHandler(async(req, res) => {
+    const currentDate = new Date()
+    const monthAgo = new Date(currentDate.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const transaction = await Transaction.find({
+        transactionDate: {
+            $gte: monthAgo,
+            $lte: currentDate
+        }
+    })
+    if(!transaction) {
+        throw new NotFoundError('No transaction made within this period')
+    }
+    res.status(StatusCodes.OK).json(transaction)
+}) 
+
+const deleteTransaction = asyncHandler(async(req, res) => {
+    
+})
+
+const topThreeProducts = asyncHandler(async(req, res) => {
+    const pipeLine = [
+        {$unwind: '$products'},
+        {$group: { _id: '$products.productId', totalSales: {$sum: '$products.quantity'}}},
+        {$sort: {totalSales: -1}},
+        {$limit: 3}
+    ]
+    const topProducts = await Transaction.aggregate(pipeLine)
+
+    res.status(StatusCodes.OK).json(topProducts)
+})
+
+
+
+
 module.exports ={
     getATransaction,
     getAllTransaction,
-    getTransactionWeek
+    getTransactionWeek,
+    topThreeProducts
 }
