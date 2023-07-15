@@ -49,11 +49,14 @@ const sellProducts = asyncHandler(async(req, res) => {
     if(!Array.isArray(productsToSell)) {
         return res.status(400).json('Invalid format')
     }
-    const transactionId = []
+    //const transactionId = []
     let totalPrice = 0
-    const productIds = productsToSell.map(product => product.productID)
+    //const productIds = productsToSell.map(product => product.productID)
+    const productDetails = productsToSell.map(product => {
+        return { productId: product.productID, quantity: product.quantity };
+      });
     for (const product of productsToSell){
-        const {sku, productID, quantity} = product
+        const {productID, quantity} = product
     const findproduct = await Product.findOne({_id: productID})
     console.log(findproduct.name)
     if(!findproduct) {
@@ -64,10 +67,10 @@ const sellProducts = asyncHandler(async(req, res) => {
     }
     totalPrice += findproduct.price * quantity
     const transcation = new Transaction({
-        //productId: productID,
-        productId: productIds,
+        //productId: productIds,
         sellerId: req.user._id,
-        quantity,
+        products: productDetails,
+        //quantity,
         totalPrice : totalPrice,
         timestamp: new Date()
     })
@@ -76,7 +79,7 @@ const sellProducts = asyncHandler(async(req, res) => {
     findproduct.quantity -= quantity
     await findproduct.save()
     }
-    res.status(StatusCodes.OK).json({msg: 'Products sold successfully',transac})
+    res.status(StatusCodes.OK).json({msg: 'Products sold successfully'})
 
 })
 
