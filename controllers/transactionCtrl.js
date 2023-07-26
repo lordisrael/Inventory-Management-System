@@ -14,6 +14,11 @@ const getATransaction = asyncHandler(async(req, res) => {
 })
 
 const getAllTransaction = asyncHandler(async(req, res) => {
+    const transaction = await Transaction.find()
+    if(!transaction){
+        throw new NotFoundError('Transactions not found')
+    }
+    res.status(StatusCodes.OK).json(transaction)
 
 })
 
@@ -48,14 +53,23 @@ const getTransactionMonth = asyncHandler(async(req, res) => {
 }) 
 
 const deleteTransaction = asyncHandler(async(req, res) => {
-    
+    const {id: transactionId} = req.params
+    const transaction = await Transaction.findByIdAndDelete({_id: transactionId})
+    if(!transaction){
+        throw new NotFoundError(`Transaction with this id: ${transactionID} not found`)
+    }
+    res.status(StatusCodes.OK).json({msg: "Deleted"})
 })
 
 const topThreeProducts = asyncHandler(async(req, res) => {
     const pipeLine = [
         {$unwind: '$products'},
-        {$group: { _id: '$products.productId', totalSales: {$sum: '$products.quantity'}}},
-        {$sort: {totalSales: -1}},
+        {$group: { _id: '$products.productId', 
+        totalSales: {$sum: '$products.quantity'},
+        totalPrice: { $sum: { $multiply: ['$products.price', '$products.quantity']}}
+        }},
+        
+        {$sort: {totalPrice: -1}},
         {$limit: 3}
     ]
     const topProducts = await Transaction.aggregate(pipeLine)
@@ -63,6 +77,10 @@ const topThreeProducts = asyncHandler(async(req, res) => {
     res.status(StatusCodes.OK).json(topProducts)
 })
 
+const topThreeDepartments = asyncHandler(async(req, res) =>{
+
+
+})
 
 
 
@@ -70,5 +88,7 @@ module.exports ={
     getATransaction,
     getAllTransaction,
     getTransactionWeek,
-    topThreeProducts
+    getTransactionMonth,
+    topThreeProducts,
+    deleteTransaction,
 }
