@@ -49,12 +49,19 @@ const sellProducts = asyncHandler(async(req, res) => {
     if(!Array.isArray(productsToSell)) {
         return res.status(400).json('Invalid format')
     }
-    //const transactionId = []
     let totalPrice = 0
+    async function findProductPrice(productId){
+        const product = await Product.findOne({_id: productId})
+        if(product){
+            return product.price
+        }
+    }
+    const productDetails = []
     //const productIds = productsToSell.map(product => product.productID)
-    const productDetails = productsToSell.map(product => {
-        return { productId: product.productID, quantity: product.quantity };
-      });
+    // const productDetails = productsToSell.map(product => {
+    //     const price = findProductPrice(product.productID);
+    //     return { productId: product.productID, quantity: product.quantity, price: price};
+    //   });
     for (const product of productsToSell){
         const {productID, quantity} = product
     const findproduct = await Product.findOne({_id: productID})
@@ -66,19 +73,25 @@ const sellProducts = asyncHandler(async(req, res) => {
         return res.status(400).json('Insufficient quantity or Product out of stock')
     }
     totalPrice += findproduct.price * quantity
+    
+    findproduct.quantity -= quantity
+
+    productDetails.push({
+        productId: product.productID,
+        quantity: product.quantity,
+        price: findproduct.price, // Include the price from the product database
+      });
+  
+    await findproduct.save()
+    }
+
     const transcation = new Transaction({
-        //productId: productIds,
         sellerId: req.user._id,
         products: productDetails,
-        //quantity,
         totalPrice : totalPrice,
         timestamp: new Date()
     })
     await transcation.save()
-    //const transac = transactionId.push(transaction._id)
-    findproduct.quantity -= quantity
-    await findproduct.save()
-    }
     res.status(StatusCodes.OK).json({msg: 'Products sold successfully'})
 
 })
