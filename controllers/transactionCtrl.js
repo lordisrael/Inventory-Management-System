@@ -80,6 +80,7 @@ const topThreeProducts = asyncHandler(async(req, res) => {
 const topThreeDepartments = asyncHandler(async(req, res) =>{
     const topDepartment = await Transaction.aggregate([
         {
+            
             $group: {_id: '$products.department',  totalSales: {$sum: '$totalPrice'}}
         },
         {$sort: {totalSales: -1}},
