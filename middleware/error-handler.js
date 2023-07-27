@@ -18,7 +18,7 @@ const CustomAPIError = require('../errors/custom-api')
         customError.statusCode = 400
     }
     if(err.name == 'CastError') {
-        customError.msg = `No item found with this id: ${err.value}`
+        customError.msg = `No item found with this id: ${req.params}`
         customError.statusCode = 404
     }
     return res.status(customError.statusCode).json({

@@ -4,7 +4,7 @@ const { updateCategory, createCategory, deleteCategory, getCategory, getAllCateg
 const authMiddleware = require('../middleware/authMiddleware')
 
 
-router.put('/edit', authMiddleware, updateCategory)
+router.put('/edit/:id', authMiddleware, updateCategory)
 router.post('/create', authMiddleware, createCategory)
 router.delete('/delete/:id', authMiddleware, deleteCategory)
 router.get('/getall', authMiddleware, getAllCategory)

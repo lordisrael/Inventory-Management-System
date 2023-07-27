@@ -26,6 +26,11 @@ const transactionSchema = new mongoose.Schema({
             type: Number,
             required: true,
           },
+          department: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Department',
+            required: true
+          }
         },
       ],
     sellerId: {

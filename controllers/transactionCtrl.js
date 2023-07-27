@@ -78,8 +78,14 @@ const topThreeProducts = asyncHandler(async(req, res) => {
 })
 
 const topThreeDepartments = asyncHandler(async(req, res) =>{
-
-
+    const topDepartment = await Transaction.aggregate([
+        {
+            $group: {_id: '$products.department',  totalSales: {$sum: '$totalPrice'}}
+        },
+        {$sort: {totalSales: -1}},
+        {$limit: 3}
+    ])
+    res.status(200).json(topDepartment)
 })
 
 
@@ -91,4 +97,5 @@ module.exports ={
     getTransactionMonth,
     topThreeProducts,
     deleteTransaction,
+    topThreeDepartments
 }
