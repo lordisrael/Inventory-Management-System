@@ -13,17 +13,24 @@ const createProduct = asyncHandler(async(req, res) => {
     res.status(StatusCodes.CREATED).json(products)
 })
 const getALLProducts = asyncHandler(async(req, res) => {
-
+    const products = await Product.find()
+    res.status(StatusCodes.OK).json(products)
 })
 const getAProduct = asyncHandler(async(req, res) => {
     const {id: productId} = req.params
     const product = await Product.findById({_id: productId}).populate('department category').select('-_id -__v')
     if(!product){
-        throw new NotFoundError(`Products with this id: ${productID} not found`)
+        throw new NotFoundError(`Products with this id: ${productId} not found`)
     }
     res.status(StatusCodes.OK).json({product})
 })
 const updateProducts = asyncHandler(async(req, res) => {
+    const {id: productId} = req.params
+    const product = await Product.findOneAndUpdate({_id: productId}, req.body, { new: true, })
+    if(!product){
+        throw new NotFoundError(`No product with id: ${productId} found` )
+    }
+    res.status(StatusCodes.OK).json({product, msg: 'Product updated'})
 
 })
 const deleteProduct = asyncHandler(async(req, res) => {
@@ -80,6 +87,8 @@ const sellProducts = asyncHandler(async(req, res) => {
         productId: product.productID,
         quantity: product.quantity,
         price: findproduct.price, // Include the price from the product database
+        department: findproduct.department
+
       });
   
     await findproduct.save()
@@ -100,6 +109,8 @@ module.exports = {
     createProduct,
     deleteProduct,
     sellProducts,
+    updateProducts,
     getAProduct,
+    getALLProducts,
     addquantitytoProduct
 }
