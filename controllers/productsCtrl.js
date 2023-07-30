@@ -57,12 +57,12 @@ const sellProducts = asyncHandler(async(req, res) => {
         return res.status(400).json('Invalid format')
     }
     let totalPrice = 0
-    async function findProductPrice(productId){
-        const product = await Product.findOne({_id: productId})
-        if(product){
-            return product.price
-        }
-    }
+    // async function findProductPrice(productId){
+    //     const product = await Product.findOne({_id: productId})
+    //     if(product){
+    //         return product.price
+    //     }
+    // }
     const productDetails = []
     //const productIds = productsToSell.map(product => product.productID)
     // const productDetails = productsToSell.map(product => {
@@ -74,7 +74,7 @@ const sellProducts = asyncHandler(async(req, res) => {
     const findproduct = await Product.findOne({_id: productID})
     console.log(findproduct.name)
     if(!findproduct) {
-        return res.status(404).json('Product with not found')
+        return res.status(404).json('Product not found')
     }
     if(findproduct.quantity < quantity) {
         return res.status(400).json('Insufficient quantity or Product out of stock')
