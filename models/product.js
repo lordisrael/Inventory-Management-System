@@ -41,9 +41,7 @@ var productSchema = new mongoose.Schema({
     weight: {
         type: Number,
     },
-    image: {
-        type: String,
-    }
+    image: [],
 });
 
     // productSchema.pre('save', async function(next){

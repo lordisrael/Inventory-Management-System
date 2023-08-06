@@ -51,6 +51,10 @@ const addquantitytoProduct = asyncHandler(async(req, res)=> {
     res.status(StatusCodes.OK).json('Quantity added')
 })
 
+const uploadImg = async(req, res) => {
+    
+}
+
 const sellProducts = asyncHandler(async(req, res) => {
     const productsToSell = req.body
     if(!Array.isArray(productsToSell)) {
@@ -112,5 +116,6 @@ module.exports = {
     updateProducts,
     getAProduct,
     getALLProducts,
-    addquantitytoProduct
+    addquantitytoProduct,
+    uploadImg
 }
