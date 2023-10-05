@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs')
+
 const crypto = require('crypto')
  // Erase if already required
 
 // Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name:{
         type:String,
         required: [true, 'Please provide name'],
@@ -20,6 +21,7 @@ var userSchema = new mongoose.Schema({
         ],
         unique:true,
     },
+    googleId: String,
     mobile:{
         type:String,
         unique:true,
@@ -54,6 +56,45 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.comparePassword = async function(candidatePassword){
     return await bcrypt.compare(candidatePassword, this.password)
 }
+
+userSchema.statics.findOrCreate = async function (profile) {
+    const User = this;
+    try {
+      const user = await User.findOne({ email : profile.email });
+      if (user) {
+        return user // Return a message indicating that the user exists
+      }
+      const newUser = new User({
+        //username: profile.email,
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.email
+        // ...other user fields based on profile
+      });
+      return await newUser.save();
+    } catch (err) {
+      throw err;
+    }
+  };
+
+// userSchema.statics.findOrCreate = function (profile, done) {
+//     const User = this;
+//     User.findOne({ username: profile.email }, (err, user) => {
+//       if (err) return done(err);
+//       if (user) return done(null, user);
+//       const newUser = new User({
+//         //username: profile.email,
+//         googleId: profile.id,
+//         name: profile.name,
+//         email: profile.email
+//         // ...other user fields based on profile
+//       });
+//       newUser.save((err, savedUser) => {
+//         if (err) return done(err);
+//         return done(null, savedUser);
+//       });
+//     });
+//   };
 
 userSchema.methods.createPasswordResetToken = function() {
     const resetToken = crypto.randomBytes(32).toString('hex')

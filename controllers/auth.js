@@ -1,11 +1,13 @@
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+require('../social_login')
 const crypto = require('crypto')
 const {StatusCodes} = require('http-status-codes')
 const asyncHandler = require('express-async-handler')
 const { createJWT } = require('../config/jwt')
 const sendEmail = require('../config/sendEmail')
 const {createRefreshJWT} = require('../config/refreshjwt')
+const passportSetup = require('../social_login')
 const { ConflictError, UnauthenticatedError, NotFoundError, BadRequestError } = require('../errors')
 
 const createUser = asyncHandler(async(req, res) => {
@@ -18,6 +20,11 @@ const createUser = asyncHandler(async(req, res) => {
     } else {
         throw new ConflictError('Email already Exists')
     }
+})
+
+const logingoogle = asyncHandler(async(req, res) => {
+    const { email } = req.body
+    const user = await User.findOrCreate({ googleId: profile.id })
 })
 
 const login = asyncHandler(async(req,res) => {
@@ -152,12 +159,23 @@ const resetPassword = asyncHandler(async(req, res) => {
     res.status(StatusCodes.OK).json('Password reset, login again')
     
 })
+
+const getUser= asyncHandler(async(req, res) => {
+    const {id: userId} = req.params
+    const user = await User.findById({_id: userId}).select('-_id -__v')
+    if(!user){
+        throw new NotFoundError(`user with this id: ${userId} not found`)
+    }
+    res.status(StatusCodes.OK).json({user})
+})
 module.exports = {
     createUser,
     login,
+    logingoogle,
     handleRefreshToken,
     logout,
     updatePassword,
+    getUser,
     forgotPassword,
     resetPassword
 }
