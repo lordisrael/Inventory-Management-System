@@ -57,25 +57,25 @@ userSchema.methods.comparePassword = async function(candidatePassword){
     return await bcrypt.compare(candidatePassword, this.password)
 }
 
-userSchema.statics.findOrCreate = async function (profile) {
-    const User = this;
-    try {
-      const user = await User.findOne({ email : profile.email });
-      if (user) {
-        return user // Return a message indicating that the user exists
-      }
-      const newUser = new User({
-        //username: profile.email,
-        googleId: profile.id,
-        name: profile.displayName,
-        email: profile.email
-        // ...other user fields based on profile
-      });
-      return await newUser.save();
-    } catch (err) {
-      throw err;
-    }
-  };
+// userSchema.statics.findOrCreate = async function (profile) {
+//     const User = this;
+//     try {
+//       const user = await User.findOne({ email : profile.email });
+//       if (user) {
+//         return user // Return a message indicating that the user exists
+//       }
+//       const newUser = new User({
+//         //username: profile.email,
+//         googleId: profile.id,
+//         name: profile.displayName,
+//         email: profile.email
+//         // ...other user fields based on profile
+//       });
+//       return await newUser.save();
+//     } catch (err) {
+//       throw err;
+//     }
+//   };
 
 // userSchema.statics.findOrCreate = function (profile, done) {
 //     const User = this;

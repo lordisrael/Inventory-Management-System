@@ -28,7 +28,12 @@ const deleteCategory = asyncHandler(async(req, res) => {
 })
 const getCategory = asyncHandler(async(req, res) => {
     const {id: categoryId} = req.params
-    const category = await Category.findById({_id: categoryId})
+    const category = await Category.findById({_id: categoryId}).populate(
+        {
+            path: 'department',
+            select: '-__v -_id' 
+        }
+    )
     if(!category) {
         throw new NotFoundError(`No category with id: ${categoryId} found`)
     }
@@ -36,7 +41,10 @@ const getCategory = asyncHandler(async(req, res) => {
 
 })
 const getAllCategory = asyncHandler(async(req, res) => {
-    const category = await Category.find()
+    const category = await Category.find().populate({
+        path: 'department',
+        select: '-__v -_id' 
+    })
     res.status(StatusCodes.OK).json({  category})
 
 })

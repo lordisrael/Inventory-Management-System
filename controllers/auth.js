@@ -168,6 +168,15 @@ const getUser= asyncHandler(async(req, res) => {
     }
     res.status(StatusCodes.OK).json({user})
 })
+const profile = asyncHandler(async(req, res) => {
+    const {_id } = req.user
+    const user = await User.findOne(_id).select('-refreshToken -password')
+    if(!user){
+        throw new NotFoundError(`User not found`)
+    } 
+    res.status(StatusCodes.OK).json(user)
+})
+TODO: getUser
 module.exports = {
     createUser,
     login,
@@ -176,6 +185,7 @@ module.exports = {
     logout,
     updatePassword,
     getUser,
+    profile,
     forgotPassword,
     resetPassword
 }

@@ -3,7 +3,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const router = express.Router()
 const passport = require('passport')
 
-const { createUser, login, handleRefreshToken, logout, forgotPassword, updatePassword, resetPassword, getUser} = require('../controllers/auth')
+const { createUser, login, handleRefreshToken, logout, forgotPassword, updatePassword, resetPassword, profile} = require('../controllers/auth')
 
 router.post('/register', createUser)
 router.get('/refresh', handleRefreshToken)
@@ -28,7 +28,8 @@ router.get('/google/success', (req , res) => {
 router.get('/google/failure' , (req , res) => {
     res.send("Error");
 })
-router.get('/getuser/:id', getUser)
+router.get('/profile', authMiddleware, profile)
+// router.get('/getuser/:id', getUser)
 router.get('/logout', logout)
 router.post('/forgot', forgotPassword)
 router.put('/update-password', authMiddleware, updatePassword)

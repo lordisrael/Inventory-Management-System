@@ -5,7 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const isAdmin = require('../middleware/isAdmin')
 
 
-router.put('/edit', authMiddleware, isAdmin, updateDepartment)
+router.put('/edit/:id', authMiddleware, isAdmin, updateDepartment)
 router.post('/create', authMiddleware,isAdmin, createDepartment)
 router.delete('/delete/:id', authMiddleware,isAdmin, deleteDepartment)
 router.get('/get/:id', authMiddleware, isAdmin, getDepartment)
