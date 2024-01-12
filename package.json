@@ -34,12 +34,10 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oidc": "^0.1.0",
     "passport-oauth2": "^1.7.0",
-    "xss-clean": "^0.1.4"
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=14 <15"
   }
 }
