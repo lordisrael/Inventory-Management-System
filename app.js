@@ -13,8 +13,12 @@ const app = express()
 
 const helmet = require('helmet')
 const cors = require('cors')
-const xss = require('xss-clean')
 const rateLimiter = require('express-rate-limit')
+
+//swagger
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");   
 
 const authMiddleware = require('./middleware/authMiddleware')
 const notFoundMiddleware = require('./middleware/not-Found')
@@ -25,6 +29,7 @@ const departmentRoute = require('./routes/departmentRoutes')
 const categoryRoute = require('./routes/categoryRoutes')
 const searchRoute = require('./routes/searchRoutes')
 const transactionRoutes = require('./routes/transactionRoutes')
+
 
 const dbConnect = require('./config/db')
 
@@ -64,11 +69,16 @@ app.use(passport.session())
 
 app.use(helmet())
 app.use(cors())
-app.use(xss())
 app.use(cookieParser())
 app.use(express.json())
                  
-                 
+              
+app.get("/", (req, res) => {
+  res.send(
+    '<h1>Chat Application API</h1><a href="/api-docs">Documentation</a>'
+  );
+});
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/products', productRoute)
