@@ -1,0 +1,938 @@
+openapi: 3.0.0
+info:
+  title: InvManSys
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://invmansys.onrender.com/api/v1
+  variables: {}
+paths:
+  /auth/register:
+    post:
+      tags:
+      - auth
+      summary: Register
+      operationId: Register
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterRequest'
+              - example:
+                  name: Joseph Elizabeth
+                  email: josephisrael206@gmail.com
+                  mobile: '07033469441'
+                  role: Admin
+                  password: loveiman
+            example:
+              name: Joseph Elizabeth
+              email: josephisrael206@gmail.com
+              mobile: '07033469441'
+              role: Admin
+              password: loveiman
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      operationId: Login
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginRequest'
+              - example:
+                  email: josephisrael206@gmail.com
+                  password: loveiman
+            example:
+              email: josephisrael206@gmail.com
+              password: loveiman
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /auth/logout:
+    get:
+      tags:
+      - auth
+      summary: Logout
+      operationId: Logout
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /auth/refresh:
+    get:
+      tags:
+      - auth
+      summary: refresh token
+      operationId: refreshtoken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /auth/forgot:
+    post:
+      tags:
+      - auth
+      summary: Forget password
+      operationId: Forgetpassword
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ForgetpasswordRequest'
+              - example:
+                  email: josephisrael@gmail.com
+            example:
+              email: josephisrael@gmail.com
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /auth/reset/{token}:
+    parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+        description: The token Id
+    patch:
+      tags:
+      - auth
+      summary: Reset Password
+      operationId: ResetPassword
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ResetPasswordRequest'
+              - example:
+                  password: loveiman
+            example:
+              password: loveiman
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /auth/update-password:
+    put:
+      tags:
+      - auth
+      summary: Update password
+      operationId: Updatepassword
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdatepasswordRequest'
+              - example:
+                  password: LOVEIMAN
+            example:
+              password: LOVEIMAN
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /auth/profile:
+    get:
+      tags:
+      - auth
+      summary: Profile
+      operationId: Profile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/create:
+    post:
+      tags:
+      - products
+      summary: Create Products
+      operationId: CreateProducts
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CreateProductsRequest'
+              - example:
+                  sku: '100001'
+                  name: floor Tiles
+                  price: '5000'
+                  brand: Novak
+                  category: 64c0fcfcd08c39f62b60632f
+                  department: 64c0fcb3d08c39f62b606327
+                  quantity: 30
+            example:
+              sku: '100001'
+              name: floor Tiles
+              price: '5000'
+              brand: Novak
+              category: 64c0fcfcd08c39f62b60632f
+              department: 64c0fcb3d08c39f62b606327
+              quantity: 30
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/sell:
+    post:
+      tags:
+      - products
+      summary: Sell Products
+      operationId: SellProducts
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SellProductsRequest'
+              description: ''
+              example:
+              - productID: 64a54bca351740e610f6ff8f
+                quantity: 1
+              - productID: 64a5404c27c02963f1c3f8cc
+                quantity: 1
+            example:
+            - productID: 64a54bca351740e610f6ff8f
+              quantity: 1
+            - productID: 64a5404c27c02963f1c3f8cc
+              quantity: 1
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/add/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        schema:
+          type: integer
+        required: true
+        description: The product Id
+    put:
+      tags:
+      - products
+      summary: Add to quantity
+      operationId: Addtoquantity
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddtoquantityRequest'
+              - example:
+                  quantity: 50
+            example:
+              quantity: 50
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/get-aproduct/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        schema:
+          type: string
+        required: true
+        description: The product ID
+    get:
+      tags:
+      - products
+      summary: Get A products
+      operationId: GetAproducts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/delete/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        schema:
+          type: string
+        required: true
+        description: The product ID
+    delete:
+      tags:
+      - products
+      summary: Delete Product
+      operationId: DeleteProduct
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/getall:
+    get:
+      tags:
+      - products
+      summary: Get all products
+      operationId: Getallproducts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/update/{productId}:
+    parameters:
+      - in: path
+        name: productId
+        schema:
+          type: string
+        required: true
+        description: The product ID
+    put:
+      tags:
+      - products
+      summary: Update Products
+      operationId: UpdateProducts
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateProductsRequest'
+              - example:
+                  category: 64a54a6c61311938fe7c930d
+            example:
+              category: 64a54a6c61311938fe7c930d
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /category/get{categoryId}:
+    parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+        required: true
+        description: The category ID
+    get:
+      tags:
+      - category
+      summary: get category
+      operationId: getcategory
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /category/create:
+    post:
+      tags:
+      - category
+      summary: create category
+      operationId: createcategory
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/createcategoryrequest'
+              - example:
+                  title: Tiles
+                  department: 64c0fcb3d08c39f62b606327
+            example:
+              title: Tiles
+              department: 64c0fcb3d08c39f62b606327
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /category/delete/{categoryId}:
+    parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+        required: true
+        description: The category ID
+    delete:
+      tags:
+      - category
+      summary: delete category
+      operationId: deletecategory
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /category/edit/{categoryId}:
+    parameters:
+      - in: path
+        name: categoryId
+        schema:
+          type: string
+        required: true
+        description: The category ID
+    put:
+      tags:
+      - category
+      summary: edit category
+      operationId: editcategory
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/editcategoryrequest'
+              - example:
+                  title: ''
+            example:
+              title: ''
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /category/getall:
+    get:
+      tags:
+      - category
+      summary: get all category
+      operationId: getallcategory
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /department/get/{departmentId}:
+    parameters:
+      - in: path
+        name: departmentId
+        schema:
+          type: string
+        required: true
+        description: The department ID
+    get:
+      tags:
+      - department
+      summary: get department
+      operationId: getdepartment
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /department/create:
+    post:
+      tags:
+      - department
+      summary: create department
+      operationId: createdepartment
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/createdepartmentrequest'
+              - example:
+                  title: Building Materials
+            example:
+              title: Building Materials
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /department/delete/{departmentId}:
+    parameters:
+      - in: path
+        name: departmentId
+        schema:
+          type: string
+        required: true
+        description: The department ID
+    delete:
+      tags:
+      - department
+      summary: delete department
+      operationId: deletedepartment
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /department/edit/{departmentId}:
+    parameters:
+      - in: path
+        name: departmentId
+        schema:
+          type: string
+        required: true
+        description: The department ID
+    put:
+      tags:
+      - department
+      summary: edit department
+      operationId: editdepartment
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/editdepartmentrequest'
+              - example:
+                  title: ''
+            example:
+              title: ''
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /department/getall:
+    get:
+      tags:
+      - department
+      summary: get all department
+      operationId: getalldepartment
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction/get-atransaction/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
+        description: The transaction ID
+    get:
+      tags:
+      - Transaction
+      summary: getATransaction
+      operationId: getATransaction
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction/week:
+    get:
+      tags:
+      - Transaction
+      summary: Get A week transaction
+      operationId: GetAweektransaction
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction/top3:
+    get:
+      tags:
+      - Transaction
+      summary: Top 3 Products Sold
+      operationId: Top3ProductsSold
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction:
+    get:
+      tags:
+      - Transaction
+      summary: Get All transactions
+      operationId: GetAlltransactions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction/delete/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
+        description: The transaction ID
+    delete:
+      tags:
+      - Transaction
+      summary: Delete Transaction
+      operationId: DeleteTransaction
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /transaction/department:
+    get:
+      tags:
+      - Transaction
+      summary: Top 3 departments
+      operationId: Top3departments
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /search/results:
+    get:
+      tags:
+      - Misc
+      summary: Search
+      operationId: Search
+      parameters:
+      - name: sku
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 100001
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+components:
+  schemas:
+    RegisterRequest:
+      title: RegisterRequest
+      required:
+      - name
+      - email
+      - mobile
+      - role
+      - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        mobile:
+          type: string
+        role:
+          type: string
+        password:
+          type: string
+      example:
+        name: Joseph Elizabeth
+        email: josephisrael206@gmail.com
+        mobile: '07033469441'
+        role: Admin
+        password: loveiman
+    LoginRequest:
+      title: LoginRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: josephisrael206@gmail.com
+        password: loveiman
+    ForgetpasswordRequest:
+      title: ForgetpasswordRequest
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: josephisrael@gmail.com
+    ResetPasswordRequest:
+      title: ResetPasswordRequest
+      required:
+      - password
+      type: object
+      properties:
+        password:
+          type: string
+      example:
+        password: loveiman
+    UpdatepasswordRequest:
+      title: UpdatepasswordRequest
+      required:
+      - password
+      type: object
+      properties:
+        password:
+          type: string
+      example:
+        password: LOVEIMAN
+    CreateProductsRequest:
+      title: CreateProductsRequest
+      required:
+      - sku
+      - name
+      - price
+      - brand
+      - category
+      - department
+      - quantity
+      type: object
+      properties:
+        sku:
+          type: string
+        name:
+          type: string
+        price:
+          type: string
+        brand:
+          type: string
+        category:
+          type: string
+        department:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+      example:
+        sku: '100001'
+        name: floor Tiles
+        price: '5000'
+        brand: Novak
+        category: 64c0fcfcd08c39f62b60632f
+        department: 64c0fcb3d08c39f62b606327
+        quantity: 30
+    SellProductsRequest:
+      title: SellProductsRequest
+      required:
+      - productID
+      - quantity
+      type: object
+      properties:
+        productID:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+      example:
+        productID: 64a54bca351740e610f6ff8f
+        quantity: 1
+    AddtoquantityRequest:
+      title: AddtoquantityRequest
+      required:
+      - quantity
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+      example:
+        quantity: 50
+    UpdateProductsRequest:
+      title: UpdateProductsRequest
+      required:
+      - category
+      type: object
+      properties:
+        category:
+          type: string
+      example:
+        category: 64a54a6c61311938fe7c930d
+    createcategoryrequest:
+      title: createcategoryrequest
+      required:
+      - title
+      - department
+      type: object
+      properties:
+        title:
+          type: string
+        department:
+          type: string
+      example:
+        title: Tiles
+        department: 64c0fcb3d08c39f62b606327
+    editcategoryrequest:
+      title: editcategoryrequest
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+      example:
+        title: ''
+    createdepartmentrequest:
+      title: createdepartmentrequest
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+      example:
+        title: Building Materials
+    editdepartmentrequest:
+      title: editdepartmentrequest
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+      example:
+        title: ''
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: auth
+- name: products
+- name: category
+- name: department
+- name: Transaction
+- name: Misc
+  description: ''
