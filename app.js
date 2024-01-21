@@ -75,7 +75,7 @@ app.use(express.json())
               
 app.get("/", (req, res) => {
   res.send(
-    '<h1>Chat Application API</h1><a href="/api-docs">Documentation</a>'
+    '<h1>Inentory Mangament System API</h1><a href="/api-docs">Documentation</a>'
   );
 });
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
